@@ -1,0 +1,60 @@
+{
+    "id": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!A8F2.DE1E.D7FB",
+    "externalId": null,
+    "meta": {
+        "created": null,
+        "lastModified": null,
+        "location": "https://gluu.mrpvisionstaging.com/identity/restv1/scim/v2/Users/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!A8F2.DE1E.D7FB",
+        "version": null,
+        "resourceType": "User"
+    },
+    "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:User"
+    ],
+    "userName": "admin",
+    "name": {
+        "formatted": "Admin User",
+        "familyName": "User",
+        "givenName": "Admin",
+        "middleName": null,
+        "honorificPrefix": null,
+        "honorificSuffix": null
+    },
+    "displayName": "Servicon Gluu Admin",
+    "nickName": null,
+    "profileUrl": null,
+    "title": null,
+    "userType": null,
+    "preferredLanguage": null,
+    "locale": null,
+    "timezone": null,
+    "active": null,
+    "password": "Hidden for Privacy Reasons",
+    "emails": [
+    ],
+    "phoneNumbers": [
+    ],
+    "ims": [
+    ],
+    "photos": [
+    ],
+    "addresses": [
+    ],
+    "groups": [
+        {
+            "operation": null,
+            "value": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!60B7",
+            "display": "Gluu Manager Group",
+            "$ref": "https://gluu.mrpvisionstaging.com/identity/restv1/scim/v2/Groups/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!60B7",
+            "type": null
+        }
+    ],
+    "entitlements": [
+    ],
+    "roles": [
+    ],
+    "pairwiseIdentitifers": [
+    ],
+    "x509Certificates": [
+    ]
+}
