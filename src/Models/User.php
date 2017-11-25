@@ -31,6 +31,14 @@ class User {
         
     }
 
+    public static function fromJson($jsonString) {
+        $userData = json_decode($jsonString, true);
+        if (null === $userData && JSON_ERROR_NONE !== json_last_error()) {
+            $errorMsg = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
+            throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('unable to decode JSON from storage: %s', $errorMsg));
+        }
+        return self::map($userData);
+    }
     public static function map($jsonString) {
         $userData = $jsonString;
 //        if (null === $userData && JSON_ERROR_NONE !== json_last_error()) {

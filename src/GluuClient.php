@@ -197,44 +197,85 @@ class GluuClient {
     
     public function getUser() {
 
-//        if(func_num_args() > 2){
-//            throw new \InvalidArgumentException('Two argument are available userid or options array.');
-//        }
-//        $arg_list = func_get_args();
-//        $user_id = null;
-//        $query = [];
-//        foreach($arg_list as $arg){
-//            if(is_string($arg)){
-//                $user_id = $arg;
-//            }
-//            if(is_array($arg)){
-//                $query = $arg;
-//            }
-//        }
-//        $accessToken = $this->requestTokens();
-//        $user_endpoint = $this->getProviderConfigValue("user_endpoint");
-//        if($user_id){
-//            $user_endpoint.='/'.$user_id;
-//        }
-//        $options = [
-//            "headers" => [
-//                "Authorization" => sprintf('Bearer %s',$accessToken->getToken()),
-//            ],
-//            'query'=>$query
-//        ];
-//        $this->getOptions($options);
-//        $response = $this->httpClient->get(
-//                $user_endpoint, $options
-//        );
-//         
-//        $collection = Models\User\Collection::fromJson((string)$response->getBody());
+        if(func_num_args() > 2){
+            throw new \InvalidArgumentException('Two argument are available userid or options array.');
+        }
+        $query = $id = '';
+        $accessToken = $this->requestTokens();
+        $user_endpoint = $this->getProviderConfigValue("user_endpoint");
+        extract($this->getFilterUrl($arg_list = func_get_args(), $endpoint));
+       
+        $options = [
+            "headers" => [
+                "Authorization" => sprintf('Bearer %s',$accessToken->getToken()),
+            ],
+            'query'=>$query
+        ];
+        $this->getOptions($options);
+        $response = $this->httpClient->get(
+                $user_endpoint, $options
+        );
+        if ($response->getStatusCode() == 200) {
+            if($id){
+                return Models\User::fromJson((string) $response->getBody());
+            }
+            return  Models\Collection::fromJson((string) $response->getBody());
+        }
 
-        $collection = Models\Collection::fromJson(file_get_contents('D:\wamp64\www\demo\scim\vendor\mrpvision\gluu\tests\users.json'));
-        dd($collection->resources[1]->json());
+        throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");
     }
     
-    
-     /**
+    public function getGroup() {
+        if (func_num_args() > 2) {
+            throw new \InvalidArgumentException('Two argument are available userid or options array.');
+        }
+        $query = $id = '';
+        $accessToken = $this->requestTokens();
+        $endpoint = $this->getProviderConfigValue("group_endpoint");
+        extract($this->getFilterUrl($arg_list = func_get_args(), $endpoint));
+
+
+        $options = [
+            "headers" => [
+                "Authorization" => sprintf('Bearer %s', $accessToken->getToken()),
+            ],
+            'query' => $query
+        ];
+        $this->getOptions($options);
+        $response = $this->httpClient->get(
+                $endpoint, $options
+        );
+        if ($response->getStatusCode() == 200) {
+            if ($id) {
+                return Models\User::fromJson((string) $response->getBody());
+            }
+            return Models\Collection::fromJson((string) $response->getBody());
+        }
+
+        throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");
+    }
+
+    private function getFilterUrl($arg_list,$url){
+        
+        $id = null;
+        $query = [];
+        foreach($arg_list as $arg){
+            if(is_string($arg)){
+                $id = $arg;
+                $url.='/'.$id;
+            }
+            if(is_array($arg)){
+                $query = $arg;
+            }
+        }
+        return [
+            'id'=>$id,
+            'query'=>$query,
+            'emdpoint'=>$url
+        ];
+    }
+
+    /**
      * Requests ID and Access tokens
      *
      * @param $code
