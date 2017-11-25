@@ -202,7 +202,7 @@ class GluuClient {
         }
         $query = $id = '';
         $accessToken = $this->requestTokens();
-        $user_endpoint = $this->getProviderConfigValue("user_endpoint");
+        $endpoint = $this->getProviderConfigValue("user_endpoint");
         extract($this->getFilterUrl($arg_list = func_get_args(), $endpoint));
        
         $options = [
@@ -213,7 +213,7 @@ class GluuClient {
         ];
         $this->getOptions($options);
         $response = $this->httpClient->get(
-                $user_endpoint, $options
+                $endpoint, $options
         );
         if ($response->getStatusCode() == 200) {
             if($id){
