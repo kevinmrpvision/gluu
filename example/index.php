@@ -1,94 +1,61 @@
 <?php
 
-/**
- * Copyright (c) 2016, 2017 François Kooman <fkooman@tuxed.net>.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+use Jumbojett\OpenIDConnectClient;
+use Mrpvision\Gluu\GluuClient;
+
+$oidc = new GluuClient('https://gluu.xxxxxxx.com', '@!XXXXX.XXXX.XXXX.XXX!0001!D716.B0F4!XXXX!201F.XXXX.XXXX.9E7D', 'XXXXXXX');
+$oidc->setVerifyPeer(false);
+$oidc->setHttpProxy('192.168.0.250:8080');
+$oidc->providerConfigParam([
+    'token_endpoint' => 'oxauth/restv1/token',
+    'user_endpoint' => 'identity/restv1/scim/v2/Users',
+    'group_endpoint' => 'identity/restv1/scim/v2/Groups'
+]);
+
+/*
+ * Get User By ID:
  */
-require_once sprintf('%s/vendor/autoload.php', dirname(__DIR__));
+$user = $oidc->getUser('@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!A477.9223.C06B.473B');
 
-use fkooman\OAuth\Client\Http\CurlHttpClient;
-use fkooman\OAuth\Client\OAuthClient;
-use fkooman\OAuth\Client\Provider;
-use fkooman\OAuth\Client\SessionTokenStorage;
+/*
+ * Get all Users
+ */
+$users = $oidc->getUser();
 
-$requestScope = 'foo bar';
-$resourceUri = 'http://localhost:8080/api.php';
+/*
+ * Create new user
+ */
 
-// absolute link to callback.php in this directory
-$callbackUri = 'http://localhost:8081/callback.php';
+$user = new Mrpvision\Gluu\Models\User();
+$schemas[] = Mrpvision\Gluu\Models\Constant::USER_SCHEMA;
+$schemas[] = Mrpvision\Gluu\Models\Constant::USER_EXTENSION_SCHEMA;
+$user->schemas = $schemas;
+$user->externalId = 11012;
+$email = new Mrpvision\Gluu\Models\Email();
+$email->primary = true;
+$email->value = 'nnnn.zzzz@gmail.com';
+$email->type = 'other';
+$emails[] = $email;
+$user->emails = $emails;
+$user->displayName = 'Aurther M Auth';
+$user->userName = 'user.name';
+$user->nickName = 'Kishor';
+$name = new \Mrpvision\Gluu\Models\Name();
+$name->familyName = 'Surname';
+$name->givenName = 'Firstname';
+$name->formatted = 'Full Name';
+$name->middleName = 'Middle name';
+$user->name = $name;
+$group['value'] = '@!XXXX.XXXX.XXXX.XXXX!0001!D716.B0F4!0003!9B7B.XXXX';
+$groups[] = $group;
+$user->groups = $groups;
+$extensionGluuUser = new \Mrpvision\Gluu\Models\ExtensionGluuUser();
+$extensionGluuUser->kronoscustomattribute = 'kronos_username';
+$user->extensionGluuUser = $extensionGluuUser;
+$user->password = 'Password';
+$user->preferredLanguage = "en-us";
+$user->locale = "en_US";
+$user->active = true;
+$response = $oidc->CreateUser($user);
 
-// the user ID to bind to, typically the currently logged in user on the
-// _CLIENT_ service...
-$userId = 'foo';
-
-try {
-    // we assume your application has proper (SECURE!) session handling
-    if (PHP_SESSION_ACTIVE !== session_status()) {
-        session_start();
-    }
-
-    $client = new OAuthClient(
-        // for DEMO purposes we store the AccessToken in the user session
-        // data...
-        new SessionTokenStorage(),
-        // for DEMO purposes we also allow connecting to HTTP URLs, do **NOT**
-        // do this in production
-        new CurlHttpClient(['allowHttp' => true])
-    );
-
-    // the OAuth provider configuration
-    $client->setProvider(
-        new Provider(
-            'demo_client',                          // client_id
-            'demo_secret',                          // client_secret
-            'http://localhost:8080/authorize.php',  // authorization_uri
-            'http://localhost:8080/token.php'       // token_uri
-        )
-    );
-
-    // set the userId to bind the access token to
-    $client->setUserId($userId);
-
-    if (false === $response = $client->get($requestScope, $resourceUri)) {
-        // "false" is returned for a number of reasons:
-        // * no access_token yet for this user ID / scope
-        // * access_token expired (and no refresh_token available)
-        // * access_token was not accepted (revoked?)
-        // * refresh_token was rejected (revoked?)
-        //
-        // we need to re-request authorization at the OAuth server, redirect
-        // the browser to the authorization endpoint (with a 302)
-        http_response_code(302);
-        header(
-            sprintf(
-                'Location: %s',
-                $client->getAuthorizeUri($requestScope, $callbackUri)
-            )
-        );
-        exit(0);
-    }
-
-    // getting the resource succeeded!
-    // print the Response object
-    echo sprintf('<pre>%s</pre>', var_export($response, true));
-} catch (Exception $e) {
-    echo sprintf('ERROR: %s', $e->getMessage());
-    exit(1);
-}
+?>
