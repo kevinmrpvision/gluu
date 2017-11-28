@@ -1,6 +1,5 @@
 <?php
 
-use Jumbojett\OpenIDConnectClient;
 use Mrpvision\Gluu\GluuClient;
 
 $oidc = new GluuClient('https://gluu.xxxxxxx.com', '@!XXXXX.XXXX.XXXX.XXX!0001!D716.B0F4!XXXX!201F.XXXX.XXXX.9E7D', 'XXXXXXX');
