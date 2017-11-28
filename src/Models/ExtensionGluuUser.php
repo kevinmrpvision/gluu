@@ -16,7 +16,7 @@ class ExtensionGluuUser {
         return $obj;
     }
     
-    public function arrayFromObject()
+    public function arrayFromObject($full = true)
     {
         $array_data = [];
         $reflector = new \ReflectionClass($this);
@@ -24,7 +24,9 @@ class ExtensionGluuUser {
         $properties = $reflector->getProperties(\ReflectionProperty::IS_PUBLIC);
         foreach($properties as $name){
             $name = $name->name;
-            $array_data[$name] = $this->{$name};
+            if($full || $this->{$name}){
+                $array_data[$name] = $this->{$name};
+            } 
         }
         return $array_data;
     }

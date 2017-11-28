@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: darrell.breeden
@@ -15,11 +16,11 @@ namespace Mrpvision\Gluu\Models;
  * @property string $ref URL for the details of the REST object
  * @property User $user The Actual User object associated with this Member
  */
+class GroupMember {
 
-class GroupMember
-{
     public $value;
     public $ref;
     public $display;
     public $user;
+
 }

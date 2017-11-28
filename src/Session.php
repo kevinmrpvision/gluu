@@ -26,10 +26,9 @@ namespace Mrpvision\Gluu;
 
 use Mrpvision\Gluu\Exception\SessionException;
 
-class Session
-{
-    public function __construct()
-    {
+class Session {
+
+    public function __construct() {
         if (PHP_SESSION_ACTIVE !== session_status()) {
             // if we have no active session, bail, we expect an active session
             // and will NOT fiddle with the application's existing session
@@ -44,8 +43,7 @@ class Session
      *
      * @return void
      */
-    public function set($key, $value)
-    {
+    public function set($key, $value) {
         $_SESSION[$key] = $value;
     }
 
@@ -56,8 +54,7 @@ class Session
      *
      * @return mixed
      */
-    public function take($key)
-    {
+    public function take($key) {
         if (!array_key_exists($key, $_SESSION)) {
             throw new SessionException(sprintf('key "%s" not found in session', $key));
         }
@@ -66,4 +63,5 @@ class Session
 
         return $value;
     }
+
 }

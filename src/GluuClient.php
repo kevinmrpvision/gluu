@@ -7,9 +7,11 @@
  */
 
 namespace Mrpvision\Gluu;
+
 use Mrpvision\Gluu\Http\Request;
 use Mrpvision\Gluu\SessionTokenStorage;
 use Mrpvision\Gluu\AccessToken;
+
 /**
  * Description of GluuClient
  *
@@ -81,15 +83,14 @@ class GluuClient {
      * @var array holds the scopes
      */
     private $scopes = array();
-    
+
     /**
      * @var mixed holds well-known openid server properties
      */
     private $wellKnown = false;
-    
     private $tokenStorage;
-
     private $httpClient;
+
     public function __construct($provider_url = null, $client_id = null, $client_secret = null) {
         if (!isset($_SESSION)) {
             session_start();
@@ -188,43 +189,70 @@ class GluuClient {
         $this->clientName = $clientName;
     }
 
-     /**
+    /**
      * @param $provider_url
      */
     public function setProviderURL($provider_url) {
         $this->providerConfig['issuer'] = $provider_url;
     }
-    
+
     public function getUser() {
 
-        if(func_num_args() > 2){
+        if (func_num_args() > 2) {
             throw new \InvalidArgumentException('Two argument are available userid or options array.');
         }
         $query = $id = '';
         $accessToken = $this->requestTokens();
         $endpoint = $this->getProviderConfigValue("user_endpoint");
         extract($this->getFilterUrl($arg_list = func_get_args(), $endpoint));
-       
         $options = [
             "headers" => [
-                "Authorization" => sprintf('Bearer %s',$accessToken->getToken()),
+                "Authorization" => sprintf('Bearer %s', $accessToken->getToken()),
             ],
-            'query'=>$query
+            'query' => $query
         ];
         $this->getOptions($options);
         $response = $this->httpClient->get(
                 $endpoint, $options
         );
         if ($response->getStatusCode() == 200) {
-            if($id){
+            if ($id) {
                 return Models\User::fromJson((string) $response->getBody());
             }
-            return  Models\Collection::fromJson((string) $response->getBody());
+            return Models\Collection::fromJson((string) $response->getBody());
         }
 
         throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");
     }
-    
+
+    public function CreateUser(\Mrpvision\Gluu\Models\User $user) {
+        $accessToken = $this->requestTokens();
+        $endpoint = $this->getProviderConfigValue("user_endpoint");
+        $options = [
+            "headers" => [
+                "Authorization" => sprintf('Bearer %s', $accessToken->getToken()),
+            ],
+            'json' => $user->arrayFromObject(false)
+        ];
+
+        try {
+            $this->getOptions($options);
+            $response = $this->httpClient->post(
+                    $endpoint, $options
+            );
+            if ($response->getStatusCode() == 201) {
+                return Models\User::fromJson((string) $response->getBody());
+            }
+            throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while creating an user's information.");
+        } catch (\GuzzleHttp\Exception\ClientException $ex) {
+            if ($ex->getCode() == 409) {
+                throw new Models\Exception\UserException("Conflict!. Username/External id already been used.");
+            }
+            echo 'here';
+            throw new Models\Exception\UserException("Getting code {$ex->getCode()} from SSO server in creating new user.");
+        }
+    }
+
     public function getGroup() {
         if (func_num_args() > 2) {
             throw new \InvalidArgumentException('Two argument are available userid or options array.');
@@ -233,7 +261,6 @@ class GluuClient {
         $accessToken = $this->requestTokens();
         $endpoint = $this->getProviderConfigValue("group_endpoint");
         extract($this->getFilterUrl($arg_list = func_get_args(), $endpoint));
-
 
         $options = [
             "headers" => [
@@ -255,23 +282,23 @@ class GluuClient {
         throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");
     }
 
-    private function getFilterUrl($arg_list,$url){
-        
+    private function getFilterUrl($arg_list, $url) {
+
         $id = null;
         $query = [];
-        foreach($arg_list as $arg){
-            if(is_string($arg)){
+        foreach ($arg_list as $arg) {
+            if (is_string($arg)) {
                 $id = $arg;
-                $url.='/'.$id;
+                $url.='/' . $id;
             }
-            if(is_array($arg)){
+            if (is_array($arg)) {
                 $query = $arg;
             }
         }
         return [
-            'id'=>$id,
-            'query'=>$query,
-            'emdpoint'=>$url
+            'id' => $id,
+            'query' => $query,
+            'endpoint' => $url
         ];
     }
 
@@ -281,7 +308,7 @@ class GluuClient {
      * @param $code
      * @return mixed
      */
-     public function requestTokens() {
+    public function requestTokens() {
         $accessTokenList = $this->tokenStorage->getAccessTokenList($this->clientName);
         foreach ($accessTokenList as $accessToken) {
             if ($accessToken->isExpired()) {
@@ -314,11 +341,12 @@ class GluuClient {
         throw new Exception\AccessTokenException("Getting code {$response->getStatusCode()} from SSO server.");
     }
 
-    private function getOptions(array &$options=[]){
+    private function getOptions(array &$options = []) {
         $options['verify'] = $this->verifyPeer;
         $options['proxy'] = $this->httpProxy;
+        $options['allow_redirects'] = false;
     }
-    
+
     private function getProviderConfigValue($param, $default = null) {
         if (isset($this->providerConfig[$param])) {
             return $this->providerConfig[$param];
@@ -338,6 +366,7 @@ class GluuClient {
             return $this->providerConfig['issuer'];
         }
     }
+
     /**
      * A wrapper around base64_decode which decodes Base64URL-encoded data,
      * which is not the same alphabet as base64.

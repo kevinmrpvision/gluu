@@ -1,38 +1,32 @@
-<?php 
+<?php
+
 namespace Mrpvision\Gluu\Models;
 
 class Collection {
 
     public $totalResults;
-
     public $itemsPerPage;
-
     public $startIndex;
-
     public $schemas = [];
-
     public $resources;
 
-    
-
-        public function __construct(array $collection) {
-        $requiredKeys = ['totalResults', 'itemsPerPage', 'Resources','startIndex'];
+    public function __construct(array $collection) {
+        $requiredKeys = ['totalResults', 'itemsPerPage', 'Resources', 'startIndex'];
         foreach ($requiredKeys as $requiredKey) {
             if (!array_key_exists($requiredKey, $collection)) {
                 throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('missing key "%s"', $requiredKey));
             }
         }
-        foreach($collection as $key=>$data){
-            $this->{'set'.ucfirst($key)}($data);
+        foreach ($collection as $key => $data) {
+            $this->{'set' . ucfirst($key)}($data);
         }
 //        $this->totalResults = $collection['totalResults'];
 //        $this->itemsPerPage = $collection['itemsPerPage'];
 //        $this->startIndex = $collection['startIndex'];
 //        $this->setResources($collection['Resources']);
     }
-    
-    public static function fromJson($jsonString)
-    {
+
+    public static function fromJson($jsonString) {
         $resourcesData = json_decode($jsonString, true);
         if (null === $resourcesData && JSON_ERROR_NONE !== json_last_error()) {
             $errorMsg = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
@@ -41,18 +35,17 @@ class Collection {
 
         return new self($resourcesData);
     }
-    
-    private function setResources(array $resources=[]){
-        foreach($resources as $resource){
+
+    private function setResources(array $resources = []) {
+        foreach ($resources as $resource) {
             $this->resources[] = User::map($resource);
         }
-        
     }
-    
-    public function getResources(){
+
+    public function getResources() {
         return $this->resources;
     }
-    
+
     public function getTotalResults() {
         return $this->totalResults;
     }
@@ -85,6 +78,6 @@ class Collection {
         $this->schemas = $schemas;
     }
 
-
 }
+
 ?>

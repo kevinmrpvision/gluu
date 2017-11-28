@@ -24,10 +24,9 @@
 
 namespace Mrpvision\Gluu;
 
-class SessionTokenStorage extends Session
-{
-    public function __construct()
-    {
+class SessionTokenStorage extends Session {
+
+    public function __construct() {
         parent::__construct();
     }
 
@@ -36,8 +35,7 @@ class SessionTokenStorage extends Session
      *
      * @return array
      */
-    public function getAccessTokenList($userId)
-    {
+    public function getAccessTokenList($userId) {
         if (!array_key_exists(sprintf('_gluu_token_%s', $userId), $_SESSION)) {
             return [];
         }
@@ -51,8 +49,7 @@ class SessionTokenStorage extends Session
      *
      * @return void
      */
-    public function storeAccessToken($userId, AccessToken $accessToken)
-    {
+    public function storeAccessToken($userId, AccessToken $accessToken) {
         $_SESSION[sprintf('_gluu_token_%s', $userId)][] = $accessToken;
     }
 
@@ -62,13 +59,13 @@ class SessionTokenStorage extends Session
      *
      * @return void
      */
-    public function deleteAccessToken($userId, AccessToken $accessToken)
-    {
+    public function deleteAccessToken($userId, AccessToken $accessToken) {
         foreach ($this->getAccessTokenList($userId) as $k => $v) {
 
-                if ($accessToken->getToken() === $v->getToken()) {
-                    unset($_SESSION[sprintf('_gluu_token_%s', $userId)][$k]);
-                }
+            if ($accessToken->getToken() === $v->getToken()) {
+                unset($_SESSION[sprintf('_gluu_token_%s', $userId)][$k]);
+            }
         }
     }
+
 }

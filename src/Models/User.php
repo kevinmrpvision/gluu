@@ -4,7 +4,7 @@ namespace Mrpvision\Gluu\Models;
 
 class User {
 
-    public $id = [];
+    public $id;
     public $schemas = [];
     public $externalId;
     public $userName;
@@ -26,6 +26,7 @@ class User {
     public $entitlements = [];
     public $extensionGluuUser;
     public $meta;
+    public $groups;
 
     public function __construct() {
         
@@ -39,6 +40,7 @@ class User {
         }
         return self::map($userData);
     }
+
     public static function map($jsonString) {
         $userData = $jsonString;
 //        if (null === $userData && JSON_ERROR_NONE !== json_last_error()) {
@@ -69,7 +71,7 @@ class User {
         return json_encode($this->arrayFromObject());
     }
 
-    public function arrayFromObject() {
+    public function arrayFromObject($full = true) {
         $array_data = [];
         $reflector = new \ReflectionClass($this);
         $namespace = $reflector->getNamespaceName();
@@ -78,10 +80,10 @@ class User {
             $name = $name->name;
             if ($this->is_sub_object($name)) {
 
-                $array_data[$name] = $this->{'get' . ucfirst($name) . 'Array'}();
-            } elseif ($name == 'extensionGluuUser') {
+                $array_data[$name] = $this->{'get' . ucfirst($name) . 'Array'}($full);
+            } elseif ($name == 'extensionGluuUser' and $this->extensionGluuUser) {
                 $array_data['urn:ietf:params:scim:schemas:extension:gluu:2.0:User'] = $this->extensionGluuUser->arrayFromObject();
-            } else {
+            } elseif ($full || $this->{$name}) {
                 $array_data[$name] = $this->{$name};
             }
         }
@@ -114,22 +116,30 @@ class User {
         return $return;
     }
 
-    private function getNameArray() {
-        return ($this->name) ? $this->name->arrayFromObject() : null;
+    private function getNameArray($full) {
+        if ($this->name instanceof \Mrpvision\Gluu\Models\Name)
+            return $this->name->arrayFromObject($full);
+        return $this->name;
     }
 
-    private function getEmailsArray() {
+    private function getEmailsArray($full) {
         $return = null;
         foreach ($this->emails as $email) {
-            $return[] = ($email) ? $email->arrayFromObject() : null;
+            if ($email instanceof \Mrpvision\Gluu\Models\Email)
+                $return[] = $email->arrayFromObject($full);
+            else
+                $return[] = $email;
         }
         return $return;
     }
 
-    private function getGroupsArray() {
+    private function getGroupsArray($full) {
         $return = null;
-        foreach ($this->groups as $group) {
-            $return[] = ($group) ? $group->arrayFromObject() : null;
+        foreach ($this->groups as $key => $group) {
+            if ($group instanceof \Mrpvision\Gluu\Models\Group)
+                $return[] = ($group) ? $group->arrayFromObject($full) : null;
+            else
+                $return[] = $group;
         }
         return $return;
     }

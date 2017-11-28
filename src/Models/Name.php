@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace Mrpvision\Gluu\Models;
 
 class Name {
@@ -15,7 +16,7 @@ class Name {
 //            $this->{$key} = $data;
 //        }
 //    }
-    
+
     public function getGivenName() {
         return $this->givenName;
     }
@@ -61,33 +62,33 @@ class Name {
         return $this;
     }
 
-public function __call($name, $arguments)
-    {
-
+    public function __call($name, $arguments) {
+        
     }
-    
-    public static function map($userData)
-    {
+
+    public static function map($userData) {
         $name_obj = new Name();
         $reflector = new \ReflectionClass(new self());
         $namespace = $reflector->getNamespaceName();
         $properties = $reflector->getProperties(\ReflectionProperty::IS_PUBLIC);
-        foreach($userData as $name=>$data){
+        foreach ($userData as $name => $data) {
             $name_obj->{$name} = $data;
         }
         return $name_obj;
     }
-    
-    public function arrayFromObject()
-    {
+
+    public function arrayFromObject($full = true) {
         $array_data = [];
         $reflector = new \ReflectionClass($this);
         $namespace = $reflector->getNamespaceName();
         $properties = $reflector->getProperties(\ReflectionProperty::IS_PUBLIC);
-        foreach($properties as $name){
+        foreach ($properties as $name) {
             $name = $name->name;
-            $array_data[$name] = $this->{$name};
+            if ($full || $this->{$name}) {
+                $array_data[$name] = $this->{$name};
+            }
         }
         return $array_data;
     }
+
 }

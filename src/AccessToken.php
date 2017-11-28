@@ -28,8 +28,7 @@ use DateTime;
 use Mrpvision\Gluu\Exception\AccessTokenException;
 use RuntimeException;
 
-class AccessToken
-{
+class AccessToken {
 
     /** @var string */
     private $accessToken;
@@ -46,8 +45,7 @@ class AccessToken
     /**
      * @param array $tokenData
      */
-    public function __construct(array $tokenData)
-    {
+    public function __construct(array $tokenData) {
         $requiredKeys = ['access_token', 'token_type', 'expires_in'];
         foreach ($requiredKeys as $requiredKey) {
             if (!array_key_exists($requiredKey, $tokenData)) {
@@ -63,14 +61,12 @@ class AccessToken
         }
     }
 
-
     /**
      * @return string
      *
      * @see https://tools.ietf.org/html/rfc6749#section-5.1
      */
-    public function getToken()
-    {
+    public function getToken() {
         return $this->accessToken;
     }
 
@@ -79,8 +75,7 @@ class AccessToken
      *
      * @see https://tools.ietf.org/html/rfc6749#section-7.1
      */
-    public function getTokenType()
-    {
+    public function getTokenType() {
         return $this->tokenType;
     }
 
@@ -89,19 +84,16 @@ class AccessToken
      *
      * @see https://tools.ietf.org/html/rfc6749#section-5.1
      */
-    public function getExpiresIn()
-    {
+    public function getExpiresIn() {
         return $this->expiresIn;
     }
-
 
     /**
      * @param 
      *
      * @return bool
      */
-    public function isExpired()
-    {
+    public function isExpired() {
         if (null === $this->getExpiresIn()) {
             // if no expiry was indicated, assume it is valid
             return false;
@@ -115,8 +107,7 @@ class AccessToken
      *
      * @return AccessToken
      */
-    public static function fromJson($jsonString)
-    {
+    public static function fromJson($jsonString) {
         $tokenData = json_decode($jsonString, true);
         if (null === $tokenData && JSON_ERROR_NONE !== json_last_error()) {
             $errorMsg = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
@@ -129,12 +120,11 @@ class AccessToken
     /**
      * @return string
      */
-    public function toJson()
-    {
+    public function toJson() {
         $jsonData = [
-                'access_token' => $this->getToken(),
-                'token_type' => $this->getTokenType(),
-                'expires_in' => $this->getExpiresIn(),
+            'access_token' => $this->getToken(),
+            'token_type' => $this->getTokenType(),
+            'expires_in' => $this->getExpiresIn(),
         ];
 
         if (false === $jsonString = json_encode($jsonData)) {
@@ -149,8 +139,7 @@ class AccessToken
      *
      * @return void
      */
-    private function setAccessToken($accessToken)
-    {
+    private function setAccessToken($accessToken) {
         self::requireString('access_token', $accessToken);
         // access-token = 1*VSCHAR
         // VSCHAR       = %x20-7E
@@ -165,8 +154,7 @@ class AccessToken
      *
      * @return void
      */
-    private function setTokenType($tokenType)
-    {
+    private function setTokenType($tokenType) {
         self::requireString('token_type', $tokenType);
         if ('bearer' !== $tokenType) {
             throw new AccessTokenException('unsupported "token_type"');
@@ -179,8 +167,7 @@ class AccessToken
      *
      * @return void
      */
-    private function setExpiresIn($expiresIn)
-    {
+    private function setExpiresIn($expiresIn) {
         if (null !== $expiresIn) {
             self::requireInt('expires_in', $expiresIn);
             if (0 >= $expiresIn) {
@@ -197,8 +184,7 @@ class AccessToken
      *
      * @return void
      */
-    private static function requireString($k, $v)
-    {
+    private static function requireString($k, $v) {
         if (!is_string($v)) {
             throw new AccessTokenException(sprintf('"%s" must be string', $k));
         }
@@ -210,10 +196,10 @@ class AccessToken
      *
      * @return void
      */
-    private static function requireInt($k, $v)
-    {
+    private static function requireInt($k, $v) {
         if (!is_int($v)) {
             throw new AccessTokenException(sprintf('"%s" must be int', $k));
         }
     }
+
 }

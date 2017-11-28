@@ -1,12 +1,15 @@
 <?php
+
 namespace Mrpvision\Gluu\Models;
+
 class Role {
 
     private $value;
+
     public function __construct() {
         
     }
-    
+
     public function getValue() {
         return $this->value;
     }
@@ -16,9 +19,8 @@ class Role {
         return $this;
     }
 
-public function __call($name, $arguments)
-    {
-
+    public function __call($name, $arguments) {
+        
     }
 
 }

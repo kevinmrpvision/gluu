@@ -1,17 +1,18 @@
 <?php
+
 namespace Mrpvision\Gluu\Models;
 
 class Im {
 
     private $value;
     private $type;
-    
+
     public function __construct($ims) {
-        foreach($ims as $key=>$data){
-            $this->{'set'.ucfirst($key)}($data);
+        foreach ($ims as $key => $data) {
+            $this->{'set' . ucfirst($key)}($data);
         }
     }
-    
+
     public function getValue() {
         return $this->value;
     }
@@ -29,9 +30,9 @@ class Im {
         $this->type = $type;
         return $this;
     }
-public function __call($name, $arguments)
-    {
 
+    public function __call($name, $arguments) {
+        
     }
 
 }
