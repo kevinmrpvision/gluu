@@ -1,6 +1,6 @@
 {
     "name": "mrpvision/gluu",
-    "keywords": ["mrpvision","gluu","SCIM","package","Open Connect"],
+    "keywords": ["mrpvision","gluu","SCIM","package","OpenId Connect"],
     "homepage": "https://github.com/kevinmrpvision/gluu",
     "authors": [
         {
