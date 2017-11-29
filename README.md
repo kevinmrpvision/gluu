@@ -32,7 +32,7 @@ resource for more information.
 
 The API is very simple to use. See the `example/` folder for a working example!
 
-# API protection#
+# API protection
 
 It's clear this API must not be anonymously accessed, however the SCIM standard does not define a specific mechanism to prevent unauthorized requests to endpoints. In this regard there are just a few guidelines in section 2 of RFC 7644 concerned with authentication and authorization.
 
