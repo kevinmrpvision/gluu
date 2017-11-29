@@ -32,6 +32,15 @@ resource for more information.
 
 The API is very simple to use. See the `example/` folder for a working example!
 
+# API protection#
+
+It's clear this API must not be anonymously accessed, however the SCIM standard does not define a specific mechanism to prevent unauthorized requests to endpoints. In this regard there are just a few guidelines in section 2 of RFC 7644 concerned with authentication and authorization.
+
+**Gluu Server** CE allows you to protect your endpoints with UMA (a profile of OAuth 2.0). This is a safe and standardized approach for controling access to web resources. For SCIM protection, we strongly recommend its usage.
+
+Alternatively, for testing purposes (as well as learning) you can temporarily enable the test mode. In this "mode" most complexity is taken out of the way so it serves as a quick and easy way to start interacting with your service.
+
+In the next section, we will work using test mode. The topic of UMA will be explored later on.
 
 # License
 
