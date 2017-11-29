@@ -6,7 +6,7 @@
         {
             "email": "kevin@mrpvision.com",
             "name": "mrpvision\u00e7ois gluu",
-            "homepage": "http://mrpvision.com",
+            "homepage": "http://mrpvision.com"
         }
     ],
     "type": "package",
@@ -16,7 +16,7 @@
             "Mrpvision\\Gluu\\Tests\\": "tests/"
         }
     },
-    "description": "Package SCIM 2.0 User Management of the Gluu Server,
+    "description": "Package SCIM 2.0 User Management of the Gluu Server",
     "license": "MIT",
     "require": {
         "php": ">=5.6",
