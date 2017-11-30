@@ -2,14 +2,13 @@
     "name": "mrpvision/gluu",
     "keywords": ["mrpvision","gluu","SCIM","package","OpenId Connect"],
     "homepage": "https://github.com/kevinmrpvision/gluu",
-    "minimum-stability":"dev",
     "authors": [
         {
             "email": "kevin@mrpvision.com",
             "name": "Kevin Patel"
         }
     ],
-    "type": "package",
+    "type": "library",
     "autoload": {
         "psr-4": {
             "Mrpvision\\Gluu\\": "src/",
@@ -24,5 +23,13 @@
     },
     "require-dev": {
         "phpunit/phpunit": "5.*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.5"
+        }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
