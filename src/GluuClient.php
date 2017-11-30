@@ -95,9 +95,6 @@ class GluuClient {
         if (!isset($_SESSION)) {
             session_start();
         }
-        if (!class_exists('\phpseclib\Crypt\RSA') && !class_exists('Crypt_RSA')) {
-            user_error('Unable to find phpseclib Crypt/RSA.php.  Ensure phpseclib is installed and in include_path before you include this file');
-        }
         $this->setProviderURL($provider_url);
         $this->clientID = $client_id;
         $this->clientSecret = $client_secret;
