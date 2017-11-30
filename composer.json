@@ -2,7 +2,7 @@
     "name": "mrpvision/gluu",
     "keywords": ["mrpvision","gluu","SCIM","package","OpenId Connect"],
     "homepage": "https://github.com/kevinmrpvision/gluu",
-    "minimum-stability":"1.0.2",
+    "minimum-stability":"dev",
     "authors": [
         {
             "email": "kevin@mrpvision.com",
