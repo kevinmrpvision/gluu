@@ -5,8 +5,7 @@
     "authors": [
         {
             "email": "kevin@mrpvision.com",
-            "name": "mrpvision\u00e7ois gluu",
-            "homepage": "http://mrpvision.com"
+            "name": "Kevin Patel"
         }
     ],
     "type": "package",
@@ -17,7 +16,7 @@
         }
     },
     "description": "Package SCIM 2.0 User Management of the Gluu Server",
-    "license": "MIT",
+    "license": "DBAD",
     "require": {
         "php": ">=5.6",
         "guzzlehttp/guzzle": "^6.3"
