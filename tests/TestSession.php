@@ -22,10 +22,10 @@
  * SOFTWARE.
  */
 
-namespace fkooman\OAuth\Client\Tests;
+namespace Mrpvision\Gluu\Tests;
 
-use fkooman\OAuth\Client\Exception\SessionException;
-use fkooman\OAuth\Client\SessionInterface;
+use Mrpvision\Gluu\Exception\SessionException;
+use Mrpvision\Gluu\SessionInterface;
 
 class TestSession implements SessionInterface
 {

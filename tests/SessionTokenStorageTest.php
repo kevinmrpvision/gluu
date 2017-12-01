@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-namespace fkooman\OAuth\Client\Tests;
+namespace Mrpvision\Gluu\Tests;
 
-use fkooman\OAuth\Client\AccessToken;
-use fkooman\OAuth\Client\TokenStorageInterface;
+use Mrpvision\Gluu\AccessToken;
+use PHPUnit\Framework\TestCase;
 
-class TestTokenStorage implements TokenStorageInterface
+class SessionTokenStorageTest extends TestCase
 {
     /** @var array */
     private $data;
@@ -44,11 +44,11 @@ class TestTokenStorage implements TokenStorageInterface
      */
     public function getAccessTokenList($userId)
     {
-        if (!array_key_exists(sprintf('_oauth2_token_%s', $userId), $this->data)) {
+        if (!array_key_exists(sprintf('_gluu_token_%s', $userId), $this->data)) {
             return [];
         }
 
-        return $this->data[sprintf('_oauth2_token_%s', $userId)];
+        return $this->data[sprintf('_gluu_token_%s', $userId)];
     }
 
     /**
@@ -57,7 +57,7 @@ class TestTokenStorage implements TokenStorageInterface
      */
     public function storeAccessToken($userId, AccessToken $accessToken)
     {
-        $this->data[sprintf('_oauth2_token_%s', $userId)][] = $accessToken;
+        $this->data[sprintf('_gluu_token_%s', $userId)][] = $accessToken;
     }
 
     /**
@@ -67,10 +67,8 @@ class TestTokenStorage implements TokenStorageInterface
     public function deleteAccessToken($userId, AccessToken $accessToken)
     {
         foreach ($this->getAccessTokenList($userId) as $k => $v) {
-            if ($accessToken->getProviderId() === $v->getProviderId()) {
-                if ($accessToken->getToken() === $v->getToken()) {
-                    unset($this->data[sprintf('_oauth2_token_%s', $userId)][$k]);
-                }
+            if ($accessToken->getToken() === $v->getToken()) {
+                unset($_SESSION[sprintf('_gluu_token_%s', $userId)][$k]);
             }
         }
     }

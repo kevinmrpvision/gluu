@@ -22,23 +22,53 @@
  * SOFTWARE.
  */
 
-namespace fkooman\OAuth\Client\Tests;
+namespace Mrpvision\Gluu\Tests;
 
-use fkooman\OAuth\Client\RandomInterface;
+use Mrpvision\Gluu\AccessToken;
 
-class TestRandom implements RandomInterface
+class SessionTokenStorage
 {
-    /** @var int */
-    private $counter = 0;
+    /** @var array */
+    private $data;
+
+    public function __construct()
+    {
+        $this->data = [];
+    }
 
     /**
-     * @param int  $length
-     * @param bool $rawBytes
+     * @param string $userId
      *
-     * @return string
+     * @return array
      */
-    public function get($length, $rawBytes = false)
+    public function getAccessTokenList($userId)
     {
-        return sprintf('random_%d', $this->counter++);
+        if (!array_key_exists(sprintf('_gluu_token_%s', $userId), $this->data)) {
+            return [];
+        }
+
+        return $this->data[sprintf('_gluu_token_%s', $userId)];
+    }
+
+    /**
+     * @param string      $userId
+     * @param AccessToken $accessToken
+     */
+    public function storeAccessToken($userId, AccessToken $accessToken)
+    {
+        $this->data[sprintf('_gluu_token_%s', $userId)][] = $accessToken;
+    }
+
+    /**
+     * @param string      $userId
+     * @param AccessToken $accessToken
+     */
+    public function deleteAccessToken($userId, AccessToken $accessToken)
+    {
+        foreach ($this->getAccessTokenList($userId) as $k => $v) {
+            if ($accessToken->getToken() === $v->getToken()) {
+                unset($_SESSION[sprintf('_gluu_token_%s', $userId)][$k]);
+            }
+        }
     }
 }

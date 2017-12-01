@@ -1,26 +1,27 @@
 {
-    "id": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!A8F2.DE1E.D7FB",
+    "id": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!D18E.0ECB.7483.7206",
     "externalId": null,
     "meta": {
         "created": null,
         "lastModified": null,
-        "location": "https://gluu.mrpvisionstaging.com/identity/restv1/scim/v2/Users/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!A8F2.DE1E.D7FB",
+        "location": "https://gluu.example.com/identity/restv1/scim/v2/Users/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0000!D18E.0ECB.7483.7206",
         "version": null,
         "resourceType": "User"
     },
     "schemas": [
+        "urn:ietf:params:scim:schemas:extension:gluu:2.0:User",
         "urn:ietf:params:scim:schemas:core:2.0:User"
     ],
-    "userName": "admin",
+    "userName": "kevin",
     "name": {
-        "formatted": "Admin User",
-        "familyName": "User",
-        "givenName": "Admin",
+        "formatted": "Kevin Patel",
+        "familyName": "Patel",
+        "givenName": "Kevin",
         "middleName": null,
         "honorificPrefix": null,
         "honorificSuffix": null
     },
-    "displayName": "Servicon Gluu Admin",
+    "displayName": "Kevin Patel",
     "nickName": null,
     "profileUrl": null,
     "title": null,
@@ -31,6 +32,14 @@
     "active": null,
     "password": "Hidden for Privacy Reasons",
     "emails": [
+        {
+            "operation": null,
+            "value": "kevin@example.com",
+            "display": "kevin@example.com",
+            "primary": true,
+            "reference": null,
+            "type": "other"
+        }
     ],
     "phoneNumbers": [
     ],
@@ -43,9 +52,9 @@
     "groups": [
         {
             "operation": null,
-            "value": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!60B7",
-            "display": "Gluu Manager Group",
-            "$ref": "https://gluu.mrpvisionstaging.com/identity/restv1/scim/v2/Groups/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!60B7",
+            "value": "@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!9B7B.4B4B",
+            "display": "Employee",
+            "$ref": "https://gluu.mrpvisionstaging.com/identity/restv1/scim/v2/Groups/@!48E2.A33E.73FF.7A79!0001!D716.B0F4!0003!9B7B.4B4B",
             "type": null
         }
     ],
@@ -56,5 +65,11 @@
     "pairwiseIdentitifers": [
     ],
     "x509Certificates": [
-    ]
+    ],
+    "urn:ietf:params:scim:schemas:extension:gluu:2.0:User": {
+        "kronoscustomattribute": "kevin.patel",
+        "RoleEntitlement": [
+            "arn:aws:iam::446609955121:role/Gluu-SSO,arn:aws:iam::446609955121:saml-provider/Shibboleth"
+        ]
+    }
 }

@@ -41,12 +41,7 @@ class User {
         return self::map($userData);
     }
 
-    public static function map($jsonString) {
-        $userData = $jsonString;
-//        if (null === $userData && JSON_ERROR_NONE !== json_last_error()) {
-//            $errorMsg = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
-//            throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('unable to decode JSON from storage: %s', $errorMsg));
-//        }
+    public static function map($userData) {
         $user = new User();
         $reflector = new \ReflectionClass(new self());
         $namespace = $reflector->getNamespaceName();
@@ -82,7 +77,7 @@ class User {
 
                 $array_data[$name] = $this->{'get' . ucfirst($name) . 'Array'}($full);
             } elseif ($name == 'extensionGluuUser' and $this->extensionGluuUser) {
-                $array_data['urn:ietf:params:scim:schemas:extension:gluu:2.0:User'] = $this->extensionGluuUser->arrayFromObject();
+                $array_data[Constant::USER_EXTENSION_SCHEMA] = $this->extensionGluuUser->arrayFromObject();
             } elseif ($full || $this->{$name}) {
                 $array_data[$name] = $this->{$name};
             }
@@ -101,7 +96,7 @@ class User {
     }
 
     private function getEmailsObject($emails) {
-        $return = null;
+        $return = [];
         foreach ($emails as $email) {
             $return[] = Email::map($email);
         }
@@ -109,7 +104,7 @@ class User {
     }
 
     private function getGroupsObject($groups) {
-        $return = null;
+        $return = [];
         foreach ($groups as $group) {
             $return[] = Group::map($group);
         }
@@ -123,7 +118,7 @@ class User {
     }
 
     private function getEmailsArray($full) {
-        $return = null;
+        $return = [];
         foreach ($this->emails as $email) {
             if ($email instanceof \Mrpvision\Gluu\Models\Email)
                 $return[] = $email->arrayFromObject($full);
@@ -134,7 +129,7 @@ class User {
     }
 
     private function getGroupsArray($full) {
-        $return = null;
+        $return = [];
         foreach ($this->groups as $key => $group) {
             if ($group instanceof \Mrpvision\Gluu\Models\Group)
                 $return[] = ($group) ? $group->arrayFromObject($full) : null;
