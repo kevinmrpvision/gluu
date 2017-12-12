@@ -216,10 +216,37 @@ class GluuClient {
             if ($id) {
                 return Models\User::fromJson((string) $response->getBody());
             }
-            return Models\Collection::fromJson((string) $response->getBody());
+            return Models\Collection::fromJson((string) $response->getBody(),'USER');
         }
 
         throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");
+    }
+    public function updateUser($id,\Mrpvision\Gluu\Models\User $user) {
+        $accessToken = $this->requestTokens();
+        $endpoint = $this->getProviderConfigValue("user_endpoint").'/' . $id;;
+        $options = [
+            "headers" => [
+                "Authorization" => sprintf('Bearer %s', $accessToken->getToken()),
+            ],
+            'json' => $user->arrayFromObject(false)
+        ];
+
+        try {
+            $this->getOptions($options);
+            $response = $this->httpClient->put(
+                    $endpoint, $options
+            );
+            if ($response->getStatusCode() == 200) {
+                return Models\User::fromJson((string) $response->getBody());
+            }
+            throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while creating an user's information.");
+        } catch (\GuzzleHttp\Exception\ClientException $ex) {
+            if ($ex->getCode() == 409) {
+                throw new Models\Exception\UserException("Conflict!. Username/External id already been used.");
+            }
+            echo 'here';
+            throw new Models\Exception\UserException("Getting code {$ex->getCode()} from SSO server in updating user.");
+        }
     }
 
     public function CreateUser(\Mrpvision\Gluu\Models\User $user) {
@@ -273,7 +300,7 @@ class GluuClient {
             if ($id) {
                 return Models\User::fromJson((string) $response->getBody());
             }
-            return Models\Collection::fromJson((string) $response->getBody());
+            return Models\Collection::fromJson((string) $response->getBody(),'GROUP');
         }
 
         throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while fetching an user's information.");

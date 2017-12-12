@@ -9,14 +9,16 @@ class Collection {
     public $startIndex;
     public $schemas = [];
     public $resources;
+    private $type;
 
-    public function __construct(array $collection) {
+    public function __construct(array $collection,$type = 'USER') {
         $requiredKeys = ['totalResults', 'itemsPerPage', 'Resources', 'startIndex'];
         foreach ($requiredKeys as $requiredKey) {
             if (!array_key_exists($requiredKey, $collection)) {
                 throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('missing key "%s"', $requiredKey));
             }
         }
+        $this->type = $type;
         foreach ($collection as $key => $data) {
             $this->{'set' . ucfirst($key)}($data);
         }
@@ -26,19 +28,20 @@ class Collection {
 //        $this->setResources($collection['Resources']);
     }
 
-    public static function fromJson($jsonString) {
+    public static function fromJson($jsonString,$type) {
         $resourcesData = json_decode($jsonString, true);
         if (null === $resourcesData && JSON_ERROR_NONE !== json_last_error()) {
             $errorMsg = function_exists('json_last_error_msg') ? json_last_error_msg() : json_last_error();
             throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('unable to decode JSON from storage: %s', $errorMsg));
         }
 
-        return new self($resourcesData);
+        return new self($resourcesData,$type);
     }
 
     private function setResources(array $resources = []) {
         foreach ($resources as $resource) {
-            $this->resources[] = User::map($resource);
+            if($this->type == 'USER')
+                $this->resources[] = User::map($resource);
         }
     }
 

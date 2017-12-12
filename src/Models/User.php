@@ -12,7 +12,7 @@ class User {
     public $displayName;
     public $nickName;
     public $profileUrl;
-    public $emails;
+    public $emails = [];
     public $addresses;
     public $phoneNumbers = [];
     public $ims = [];

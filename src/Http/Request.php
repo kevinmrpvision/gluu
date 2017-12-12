@@ -75,6 +75,17 @@ class Request
     {
         return $res = $this->client->request('POST', $requestUri,$options);
     }
+    /**
+     * @param string $requestUri
+     * @param array  $postData
+     * @param array  $requestHeaders
+     *
+     * @return Request
+     */
+    public function put($requestUri, array $options = [])
+    {
+        return $res = $this->client->request('PUT', $requestUri,$options);
+    }
 
     /**
      * @param string $key
