@@ -40,7 +40,7 @@ class AccessToken {
     private $expiresIn = null;
 
     /** @var string|null */
-    private $buffer = 5;
+    private $buffer = 10;
 
     /**
      * @param array $tokenData

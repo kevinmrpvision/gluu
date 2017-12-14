@@ -153,6 +153,72 @@ class User {
         return $return;
     }
 
+    public static function fill($input) {
+        $requiredKeys = [ 'first_name', 'sso_username', 'last_name', 'password', 'email', 'sso_group', 'kronos_username'];
+        foreach ($requiredKeys as $requiredKey) {
+            if (!array_key_exists($requiredKey, $input)) {
+                throw new \Mrpvision\Gluu\Models\Exception\UserException(sprintf('Missing key "%s" is required to fill user model.', $requiredKey));
+            }
+        }
+        $user = new \Mrpvision\Gluu\Models\User();
+        $schemas[] = \Mrpvision\Gluu\Models\Constant::USER_SCHEMA;
+        $schemas[] = \Mrpvision\Gluu\Models\Constant::USER_EXTENSION_SCHEMA;
+        $user->schemas = $schemas;
+        $user->name = $input['first_name'];
+        $user->userName = $input['sso_username'];
+        $user->displayName = $input['first_name'] . ' ' . $input['last_name'];
+        $user->nickName = $input['first_name'];
+        $user->name = self::fill_name($input);
+        $user->emails = self::fill_email($input);
+        $user->groups = self::fill_group($input);
+        $user->extensionGluuUser = self::fill_extention($input);
+        $user->password = $input['password'];
+        $user->preferredLanguage = "en-us";
+        $user->locale = "en_US";
+        $user->active = true;
+        return $user;
+    }
+
+    private static function fill_name(array $input) {
+
+        $name = new \Mrpvision\Gluu\Models\Name();
+        $name->familyName = $input['last_name'];
+        $name->givenName = $input['first_name'];
+        $name->formatted = $input['first_name'] . ' ' . $input['last_name'];
+        if (isset($input['middle_name'])) {
+            $name->middleName = $input['middle_name'];
+        }
+        return $name;
+    }
+
+    private static function fill_email($input) {
+        $email = new \Mrpvision\Gluu\Models\Email();
+        $email->primary = true;
+        $email->value = $input['email'];
+        $email->type = 'other';
+        $emails[] = $email;
+        return $emails;
+    }
+
+    private static function fill_group($input) {
+        $group['value'] = $input['sso_group'];
+        $groups[] = $group;
+        return $groups;
+    }
+
+    private static function fill_extention($input) {
+        $extensionGluuUser = new \Mrpvision\Gluu\Models\ExtensionGluuUser();
+        $extensionGluuUser->kronoscustomattribute = $input['kronos_username'];
+        return $extensionGluuUser;
+    }
+    
+    public function update(\Mrpvision\Gluu\GluuClient $gluu){
+        return $gluu->updateUser($this->id, $this);
+    }
+    public function save(\Mrpvision\Gluu\GluuClient $gluu){
+       return $gluu->CreateUser($this);
+    }
+
 }
 
 ?>
