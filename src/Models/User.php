@@ -218,6 +218,9 @@ class User {
     public function save(\Mrpvision\Gluu\GluuClient $gluu){
        return $gluu->CreateUser($this);
     }
+    public function delete(\Mrpvision\Gluu\GluuClient $gluu){
+       return $gluu->DeleteUser($this->id);
+    }
 
 }
 

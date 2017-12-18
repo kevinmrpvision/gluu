@@ -86,6 +86,17 @@ class Request
     {
         return $res = $this->client->request('PUT', $requestUri,$options);
     }
+    /**
+     * @param string $requestUri
+     * @param array  $postData
+     * @param array  $requestHeaders
+     *
+     * @return Request
+     */
+    public function delete($requestUri, array $options = [])
+    {
+        return $res = $this->client->request('DELETE', $requestUri,$options);
+    }
 
     /**
      * @param string $key

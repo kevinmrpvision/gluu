@@ -248,6 +248,30 @@ class GluuClient {
             throw new Models\Exception\UserException("Getting code {$ex->getCode()} from SSO server in updating user.");
         }
     }
+    public function DeleteUser($id) {
+        $accessToken = $this->requestTokens();
+        $endpoint = $this->getProviderConfigValue("user_endpoint").'/' . $id;
+        $options = [
+            "headers" => [
+                "Authorization" => sprintf('Bearer %s', $accessToken->getToken()),
+            ]
+        ];
+
+        try {
+            $this->getOptions($options);
+            $response = $this->httpClient->delete(
+                    $endpoint, $options
+            );
+            if ($response->getStatusCode() == 204) {
+                return true;
+            }
+            throw new Exception\SSOException("Getting code {$response->getStatusCode()} from SSO server while creating an user's information.");
+        } catch (\Exception $ex) {
+            throw new Models\Exception\UserException("Getting code {$ex->getCode()} from SSO server in deleting user.");
+        } catch (\GuzzleHttp\Exception\ClientException $ex) {
+            throw new Models\Exception\UserException("Getting code {$ex->getCode()} from SSO server in deleting user.");
+        }
+    }
 
     public function CreateUser(\Mrpvision\Gluu\Models\User $user) {
         $accessToken = $this->requestTokens();
