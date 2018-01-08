@@ -201,14 +201,23 @@ class User {
     }
 
     private static function fill_group($input) {
-        $group['value'] = $input['sso_group'];
-        $groups[] = $group;
+        if (is_array($input['sso_group'])) {
+            foreach ($input['sso_group'] as $grp) {
+                $group['value'] = $grp;
+                $groups[] = $group;
+            }
+        } else {
+            $group['value'] = $input['sso_group'];
+            $groups[] = $group;
+        }
         return $groups;
     }
 
     private static function fill_extention($input) {
         $extensionGluuUser = new \Mrpvision\Gluu\Models\ExtensionGluuUser();
         $extensionGluuUser->kronoscustomattribute = $input['kronos_username'];
+        $extensionGluuUser->mobile = isset($input['mobile'])?$input['mobile']:'';
+        $extensionGluuUser->phone_number_verified = isset($input['mobile_verified'])?$input['mobile_verified']:'';
         return $extensionGluuUser;
     }
     

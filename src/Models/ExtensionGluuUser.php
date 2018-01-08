@@ -3,6 +3,8 @@ namespace Mrpvision\Gluu\Models;
 class ExtensionGluuUser {
 
     public  $kronoscustomattribute;
+    public  $mobile;
+    public  $phoneNumberVerified;
 
     public static function map($mapdata)
     {
